@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import format from 'date-fns/format';
 import { withRouter, Link } from 'react-router-dom';
 
-
 const ClickableTr = styled.tr`
 	cursor: pointer;
 `;

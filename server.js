@@ -14,7 +14,7 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'build')));
 
 const MONGO_URI =
-	'mongodb://guga:guga123@ds127961.mlab.com:27961/vobi-invoices';
+	'mongodb://user:pass@ds127961.mlab.com:27961/vobi-invoices';
 
 mongoose.connect(MONGO_URI);
 mongoose.connection
