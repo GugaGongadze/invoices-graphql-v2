@@ -3,14 +3,16 @@ import { withRouter, Link } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 import mutation from '../mutations/Logout';
 
-
 class Navbar extends Component {
-    onLogoutClick() {
+	onLogoutClick() {
 		this.props.mutate({}).then(() => {
 			this.props.history.push('/login');
 		});
 	}
 
+	onCreateInvoiceClick() {
+		this.props.history.push('/invoice/new');
+	}
 
 	render() {
 		return (
@@ -24,20 +26,22 @@ class Navbar extends Component {
 					<div>
 						<ul className="nav navbar-nav navbar-right">
 							<li>
-								<Link
-									to="/invoice/new"
+								<button
 									className="btn btn-large btn-success"
+									onClick={this.onCreateInvoiceClick.bind(
+										this
+									)}
 								>
 									Create New Invoice
-								</Link>
+								</button>
 							</li>
 							<li>
-								<a
+								<button
 									className="btn btn-large btn-warning"
 									onClick={this.onLogoutClick.bind(this)}
 								>
 									Logout
-								</a>
+								</button>
 							</li>
 						</ul>
 					</div>

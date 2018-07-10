@@ -12,14 +12,14 @@ import currentUserQuery from '../queries/CurrentUser';
 import getInvoicesQuery from '../queries/GetInvoices';
 import getInvoicesByUserIdQuery from '../queries/GetInvoicesByUserId';
 
+import ClickableRow from './ClickableRow';
 import Navbar from './Navbar';
+const ClickableTr = styled.tr`
+	cursor: pointer;
+`;
 
 const Container = styled.div`
 	height: 100vh;
-`;
-
-const ClickableTr = styled.tr`
-	cursor: pointer;
 `;
 
 const PrevButton = styled.button`
@@ -42,8 +42,10 @@ class Dashboard extends Component {
 
 		this.state = {
 			page: parseInt(this.props.match.params.page) || 1,
-      limit: 5,
-      invoices: []
+			limit: 5,
+			invoices: [],
+			filteredInvoices: [],
+			searchText: ''
 		};
 	}
 
@@ -59,10 +61,9 @@ class Dashboard extends Component {
 				}
 			})
 			.then(data => {
-        console.log(data.data.getInvoices);
-        this.setState({
-          invoices: [...data.data.getInvoices]
-        })
+				this.setState({
+					invoices: [...data.data.getInvoices]
+				});
 			});
 	}
 
@@ -87,12 +88,7 @@ class Dashboard extends Component {
 			.then(name => console.log(name));
 	}
 
-	onInvoiceClick(id, e) {
-		this.props.history.push(`/details/${id}`);
-	}
-
 	onPrevClick() {
-		console.log(this.state);
 		this.setState(prevState => {
 			return { page: prevState.page - 1 };
 		});
@@ -100,7 +96,6 @@ class Dashboard extends Component {
 	}
 
 	onNextClick() {
-		console.log(this.state);
 		this.setState(prevState => {
 			return { page: prevState.page + 1 };
 		});
@@ -108,32 +103,25 @@ class Dashboard extends Component {
 	}
 
 	onInvoiceSearch(e) {
-		console.log(e.target.value);
-		const value = e.target.value;
-		this.props.invoicesQuery
-			.fetchMore({
-				variables: {
-					limit: 0,
-					skip: 0
-				},
-				updateQuery: (prev, { fetchMoreResult }) => {
-					if (!fetchMoreResult) return prev;
+		const searchText = e.target.value;
 
-					console.log(fetchMoreResult.getInvoices.length);
-				}
-			})
-			.then(data => {
-				data.data.getInvoices.map(invoice => {
-					if (invoice.name.includes(value)) {
-						console.log(invoice.name, invoice.id);
-					}
-				});
-				// return data.data.getInvoices.name.includes(e.target.value)
+		this.setState({
+			searchText: searchText
+		});
+
+		if (searchText === '') {
+			this.setState({
+				filteredInvoices: []
 			});
-	}
+		} else {
+			const values = this.state.invoices.filter(invoice => {
+				return invoice.name.includes(searchText);
+			});
 
-	nextButtonDisabledStatus() {
-		return true;
+			this.setState({
+				filteredInvoices: [...values]
+			});
+		}
 	}
 
 	render() {
@@ -158,8 +146,10 @@ class Dashboard extends Component {
 						className="form-control"
 						type="search"
 						name="search"
+						placeholder="Search invoice by name"
 						onChange={this.onInvoiceSearch.bind(this)}
 					/>
+
 					<br />
 					<Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
 						<Tab eventKey={1} title="Total Invoices">
@@ -175,49 +165,16 @@ class Dashboard extends Component {
 											<th>Address</th>
 										</tr>
 									</thead>
-									<tbody>
-										{invoices &&
-											invoices.map(invoice => {
-												return (
-													<ClickableTr
-														key={invoice.id}
-														onClick={e =>
-															this.onInvoiceClick(
-																invoice.id,
-																e
-															)
-														}
-													>
-														<td>{invoice.name}</td>
-														<td>
-															{format(
-																invoice.created,
-																'DD/MM/YYYY'
-															)}
-														</td>
-														<td>
-															{format(
-																invoice.date,
-																'DD/MM/YYYY'
-															)}
-														</td>
-														<td>
-															{
-																invoice.description
-															}
-														</td>
-														<td>
-															{
-																invoice.contactName
-															}
-														</td>
-														<td>
-															{invoice.address}
-														</td>
-													</ClickableTr>
-												);
-											})}
-									</tbody>
+									<ClickableRow
+										data={
+											invoices &&
+											this.state.filteredInvoices
+												.length === 0 &&
+											!this.state.searchText.length
+												? invoices
+												: this.state.filteredInvoices
+										}
+									/>
 								</table>
 							</div>
 							<SpaceBetween>
@@ -226,7 +183,7 @@ class Dashboard extends Component {
 									disabled={
 										parseInt(
 											this.props.match.params.page
-										) === 1
+										) === 1 || !this.props.match.params.page
 									}
 									className="btn btn-info"
 								>
@@ -235,7 +192,8 @@ class Dashboard extends Component {
 								<NextButton
 									disabled={
 										parseInt(this.props.match.params.page) >
-										this.state.invoices.length / this.state.limit
+										this.state.invoices.length /
+											this.state.limit
 									}
 									onClick={this.onNextClick.bind(this)}
 									className="btn btn-info"
@@ -357,7 +315,6 @@ export default compose(
 			const page = parseInt(window.location.pathname.slice(6)) || 1;
 			const limit = 5;
 			const skip = page * limit - limit;
-			console.log(skip, limit);
 			return {
 				variables: { skip, limit }
 			};
