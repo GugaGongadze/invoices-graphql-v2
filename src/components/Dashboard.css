@@ -1,0 +1,26 @@
+table {
+  border-collapse: collapse;
+}
+
+tr {
+  background: #eee;
+  border-bottom: 1px solid #fff;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+tr td .invdet,
+tr th .invdet {
+  max-height: 0;
+  padding: 0 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: max-height 0.3s, padding 0.3s;
+}
+tr.active td .invdet,
+tr.active th .invdet {
+  max-height: 100px;
+  padding: 10px 10px;
+  transition: max-height 0.6s, padding 0.6s;
+}

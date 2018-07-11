@@ -55,7 +55,7 @@ class Login extends Component {
         <Row class="row">
           <FormWrapper className="col-xs-4">
             <Form className="form-signin">
-              <h2>Login Form</h2>
+              <h2>Please Login</h2>
               <div className="form-group">
                 <input
                   type="text"

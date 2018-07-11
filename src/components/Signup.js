@@ -54,7 +54,7 @@ class Signup extends Component {
         <Row>
           <FormWrapper className="col-xs-4">
             <Form className="form-signin">
-              <h2>Registration Form</h2>
+              <h2>Registration</h2>
               <div className="form-group">
                 <input
                   type="text"
