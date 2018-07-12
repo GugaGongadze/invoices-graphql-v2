@@ -5,9 +5,13 @@ import { graphql, compose } from 'react-apollo';
 
 import { withRouter } from 'react-router-dom';
 import mutation from '../mutations/CreateInvoiceDetails';
+import deleteInvoiceMutation from '../mutations/DeleteInvoice';
 import query from '../queries/CurrentUser';
 
 import InvoiceDetails from './InvoiceDetails';
+import GetInvoices from '../queries/GetInvoices';
+
+import EditInvoiceModal from './EditInvoiceModal';
 
 const ClickableTr = styled.tr`
   cursor: pointer;
@@ -29,6 +33,23 @@ class ClickableRow extends Component {
   toggleInvoiceDetails(e) {
     const targetInvoiceDetails = e.target.parentNode.nextSibling;
     if (targetInvoiceDetails) targetInvoiceDetails.classList.toggle('active');
+  }
+
+  onInvoiceDelete(e, id) {
+    this.props.deleteInvoiceMutation({
+      variables: {
+        id
+      },
+      refetchQueries: [
+        {
+          query: GetInvoices,
+          variables: {
+            skip: 0,
+            limit: 5
+          }
+        }
+      ]
+    });
   }
 
   onInvoiceDetailSubmit(e) {
@@ -53,7 +74,11 @@ class ClickableRow extends Component {
         },
         refetchQueries: [
           {
-            query
+            query: GetInvoices,
+            variables: {
+              skip: 0,
+              limit: 5
+            }
           }
         ]
       })
@@ -66,19 +91,57 @@ class ClickableRow extends Component {
     return (
       <tbody>
         {this.props.data.map((invoice, i) => {
+          console.log(invoice);
           return (
             <Fragment key={invoice.id}>
-              <ClickableTr
-                data-toggle="modal"
-                data-target="#invoiceDetailsModal"
-                data-index={`inv-${i}`}
-              >
-                <td>{invoice.name}</td>
-                <td>{format(invoice.created, 'DD/MM/YYYY')}</td>
-                <td>{format(invoice.date, 'DD/MM/YYYY')}</td>
-                <td>{invoice.description}</td>
-                <td>{invoice.contactName}</td>
-                <td>{invoice.address}</td>
+              <ClickableTr data-index={`inv-${i}`}>
+                <td data-toggle="modal" data-target="#invoiceDetailsModal">
+                  {invoice.name}
+                </td>
+                <td data-toggle="modal" data-target="#invoiceDetailsModal">
+                  {format(invoice.created, 'DD/MM/YYYY')}
+                </td>
+                <td data-toggle="modal" data-target="#invoiceDetailsModal">
+                  {format(invoice.date, 'DD/MM/YYYY')}
+                </td>
+                <td data-toggle="modal" data-target="#invoiceDetailsModal">
+                  {invoice.description}
+                </td>
+                <td data-toggle="modal" data-target="#invoiceDetailsModal">
+                  {invoice.contactName}
+                </td>
+                <td data-toggle="modal" data-target="#invoiceDetailsModal">
+                  {invoice.address}
+                </td>
+                {invoice.userId === this.props.userId && (
+                  <Fragment>
+                    <td>
+                      <button
+                        className="btn btn-large btn-warning"
+                        data-toggle="modal"
+                        data-target={`#editInvoiceModal-${i}`}
+                      >
+                      <span
+                          className="glyphicon glyphicon-pencil"
+                          aria-hidden="true"
+                        />
+                      </button>
+
+                      <EditInvoiceModal index={i} data={invoice} />
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-large btn-danger"
+                        onClick={e => this.onInvoiceDelete(e, invoice.id)}
+                      >
+                        <span
+                          className="glyphicon glyphicon-remove"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </td>
+                  </Fragment>
+                )}
               </ClickableTr>
               <div
                 id="invoiceDetailsModal"
@@ -266,4 +329,7 @@ class ClickableRow extends Component {
   }
 }
 
-export default compose(graphql(mutation))(withRouter(ClickableRow));
+export default compose(
+  graphql(mutation),
+  graphql(deleteInvoiceMutation, { name: 'deleteInvoiceMutation' })
+)(withRouter(ClickableRow));

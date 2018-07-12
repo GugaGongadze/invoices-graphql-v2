@@ -4,6 +4,7 @@ export default gql`
   query InvoicesQuery($skip: Int, $limit: Int) {
     getInvoices(skip: $skip, limit: $limit) {
       id
+      userId
       name
       date
       created

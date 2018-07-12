@@ -8,6 +8,7 @@ export default gql`
       email
       invoices {
         id
+        userId
         name
         date
         created
