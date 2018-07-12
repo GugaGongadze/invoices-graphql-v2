@@ -5,12 +5,12 @@ import getInvoicesQuery from '../queries/GetInvoices';
 
 class EditInvoice extends Component {
   state = {
-      name: this.props.data.name,
-      description: this.props.data.description,
-      date: this.props.data.date,
-      address: this.props.data.address,
-      contactName: this.props.data.contactName
-    };
+    name: this.props.data.name,
+    description: this.props.data.description,
+    date: this.props.data.date,
+    address: this.props.data.address,
+    contactName: this.props.data.contactName
+  };
 
   handleInputChange(event) {
     const target = event.target;
@@ -52,7 +52,11 @@ class EditInvoice extends Component {
     if (this.props.data.loading) return <div />;
 
     return (
-      <div id={`editInvoiceModal-${this.props.index}`} className="modal fade" role="dialog">
+      <div
+        id={`editInvoiceModal-${this.props.index}`}
+        className="modal fade"
+        role="dialog"
+      >
         <div className="modal-dialog modal-sm">
           <div className="modal-content">
             <div className="modal-header">
@@ -124,6 +128,13 @@ class EditInvoice extends Component {
                   />
                 </div>
                 <button
+                  disabled={
+                    !this.state.name ||
+                    !this.state.description ||
+                    !this.state.date ||
+                    !this.state.contactName ||
+                    !this.state.address
+                  }
                   type="submit"
                   data-dismiss="modal"
                   className="btn btn-large btn-success"

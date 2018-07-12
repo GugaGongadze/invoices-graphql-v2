@@ -30,11 +30,7 @@ const Form = styled.form`
 `;
 
 class Signup extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { username: '', email: '', password: '' };
-  }
+  state = { username: '', email: '', password: '' };
 
   OnSignUp(e) {
     e.preventDefault();
@@ -45,7 +41,7 @@ class Signup extends Component {
       .mutate({
         variables: { username, email, password }
       })
-      .then(() => this.props.history.push('/dashboard'));
+      .then(() => this.props.history.push('/'));
   }
 
   render() {

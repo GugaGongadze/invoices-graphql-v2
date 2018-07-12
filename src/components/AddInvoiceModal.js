@@ -1,7 +1,7 @@
 import React from 'react';
 import AddInvoiceForm from './AddInvoiceForm';
 
-const AddInvoiceModal = (props) => {
+const AddInvoiceModal = props => {
   return (
     <div id="newInvoiceModal" className="modal fade" role="dialog">
       <div className="modal-dialog">

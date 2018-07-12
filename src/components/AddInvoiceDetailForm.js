@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { graphql, compose } from 'react-apollo';
 
-import GetInvoices from '../queries/GetInvoices';
-import createInvoiceMutation from '../mutations/CreateInvoice';
+import { graphql } from 'react-apollo';
+import getInvoicesQuery from '../queries/GetInvoices';
+import mutation from '../mutations/CreateInvoiceDetails';
 
-class AddInvoiceForm extends Component {
+class AddInvoiceDetailForm extends Component {
   state = {
     name: '',
     description: '',
-    date: '',
-    contactName: '',
-    address: ''
+    quantity: 0,
+    price: 0,
+    total: 0
   };
 
   handleInputChange(event) {
@@ -23,24 +23,26 @@ class AddInvoiceForm extends Component {
     });
   }
 
-  onInvoiceSubmit(event) {
-    event.preventDefault();
+  onInvoiceDetailSubmit(e) {
+    e.preventDefault();
 
-    const userId = this.props.userId;
-    const { name, description, date, contactName, address } = this.state;
+    const { userId, invoiceId } = this.props;
+    const { name, description, quantity, price } = this.state;
+    const total = quantity * price;
 
     this.props.mutate({
       variables: {
         userId,
+        invoiceId,
         name,
         description,
-        date,
-        contactName,
-        address
+        quantity,
+        price,
+        total
       },
       refetchQueries: [
         {
-          query: GetInvoices,
+          query: getInvoicesQuery,
           variables: {
             skip: 0,
             limit: 5
@@ -54,77 +56,67 @@ class AddInvoiceForm extends Component {
     return (
       <form>
         <div className="form-group">
-          <label htmlFor="name">Name</label>
           <input
             type="text"
             name="name"
             className="form-control"
-            placeholder="Invoice name"
-            value={this.state.name || ''}
+            placeholder="Name"
+            value={this.state.name}
             onChange={this.handleInputChange.bind(this)}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="description">Description</label>
           <input
             type="text"
             name="description"
             className="form-control"
             placeholder="Description"
-            value={this.state.description || ''}
+            value={this.state.description}
             onChange={this.handleInputChange.bind(this)}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="date">Due Date</label>
           <input
-            type="date"
-            name="date"
+            type="number"
+            name="quantity"
             className="form-control"
-            placeholder="Due Date"
-            value={this.state.date || ''}
+            placeholder="Quantity"
+            value={this.state.quantity}
             onChange={this.handleInputChange.bind(this)}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="contactName">Contact Name</label>
           <input
-            type="text"
-            name="contactName"
+            type="number"
+            name="price"
             className="form-control"
-            placeholder="Contact Name"
-            value={this.state.contactName || ''}
+            placeholder="Price"
+            value={this.state.price}
             onChange={this.handleInputChange.bind(this)}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="address">Address</label>
           <input
-            type="text"
-            name="address"
+            type="number"
+            name="total"
             className="form-control"
-            placeholder="Contact Name"
-            value={this.state.address || ''}
+            placeholder="Total"
+            value={this.state.quantity * this.state.price}
             onChange={this.handleInputChange.bind(this)}
+            disabled
             required
           />
         </div>
         <button
-          disabled={
-            !this.state.name ||
-            !this.state.description ||
-            !this.state.date ||
-            !this.state.contactName ||
-            !this.state.address
-          }
+          disabled={!this.state.name || !this.state.description || !this.state.quantity || !this.state.price}
           data-dismiss="modal"
-          type="submit"
           className="btn btn-large btn-success"
-          onClick={this.onInvoiceSubmit.bind(this)}
+          type="submit"
+          onClick={this.onInvoiceDetailSubmit.bind(this)}
         >
           Submit
         </button>
@@ -133,4 +125,4 @@ class AddInvoiceForm extends Component {
   }
 }
 
-export default compose(graphql(createInvoiceMutation))(AddInvoiceForm);
+export default graphql(mutation)(AddInvoiceDetailForm);

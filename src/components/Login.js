@@ -31,11 +31,7 @@ const Form = styled.form`
 `;
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { username: '', password: '' };
-  }
+  state = { username: '', password: '' };
 
   onLogin(e) {
     e.preventDefault();

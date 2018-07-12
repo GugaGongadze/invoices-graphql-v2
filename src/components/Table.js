@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ClickableRow from './ClickableRow';
+import InvoiceRow from './InvoiceRow';
 
 class Table extends Component {
   render() {
@@ -19,7 +19,7 @@ class Table extends Component {
             </tr>
           </thead>
 
-          <ClickableRow userId={this.props.userId} data={this.props.data} />
+          <InvoiceRow userId={this.props.userId} data={this.props.data} />
         </table>
       </div>
     );

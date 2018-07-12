@@ -2,10 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import query from '../queries/CurrentUser';
+import query from '../queries/GetInvoices';
 import mutation from '../mutations/DeleteInvoiceDetails';
-
-import EditInvoiceDetails from './EditInvoiceDetails';
 
 class InvoiceDetails extends Component {
   constructor(props) {
@@ -17,17 +15,20 @@ class InvoiceDetails extends Component {
   onInvoiceDetailDelete() {
     const id = this.props.data.id;
 
-    this.props
-      .deleteInvoiceDetailMutation({
-        variables: {
-          id
-        },
-        refetchQueries: [
-          {
-            query
+    this.props.deleteInvoiceDetailMutation({
+      variables: {
+        id
+      },
+      refetchQueries: [
+        {
+          query,
+          variables: {
+            skip: 0,
+            limit: 5
           }
-        ]
-      })
+        }
+      ]
+    });
   }
 
   render() {
@@ -41,40 +42,45 @@ class InvoiceDetails extends Component {
     } = this.props.data;
 
     return (
-      <tbody>
-        <tr>
-          <td>{name}</td>
-          <td>{description}</td>
-          <td>{quantity}</td>
-          <td>{price}</td>
-          <td>{total}</td>
+      <Fragment>
+        <tbody>
+          <tr>
+            <td>{name}</td>
+            <td>{description}</td>
+            <td>{quantity}</td>
+            <td>{price}</td>
+            <td>{total}</td>
 
-          {this.props.currentUser === userId && (
-            <Fragment>
-              <td>
-                <button
-                  className="btn btn-large btn-warning"
-                  data-toggle="modal"
-                  data-target="#editInvoiceModal"
-                >
-                  Edit
-                </button>
-
-                <EditInvoiceDetails data={this.props.data} />
-              </td>
-              <td>
-                <button
-                  data-dismiss="modal"
-                  className="btn btn-large btn-danger"
-                  onClick={this.onInvoiceDetailDelete.bind(this)}
-                >
-                  Delete
-                </button>
-              </td>
-            </Fragment>
-          )}
-        </tr>
-      </tbody>
+            {this.props.currentUser === userId && (
+              <Fragment>
+                <td>
+                  <button
+                    className="btn btn-large btn-warning"
+                    data-toggle="modal"
+                    data-target={`#editInvoiceDetailModal-${this.props.data.id}`}
+                  >
+                    <span
+                      className="glyphicon glyphicon-pencil"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <button
+                    className="btn btn-large btn-danger"
+                    onClick={this.onInvoiceDetailDelete.bind(this)}
+                  >
+                    <span
+                      className="glyphicon glyphicon-remove"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+              </Fragment>
+            )}
+          </tr>
+        </tbody>
+      </Fragment>
     );
   }
 }

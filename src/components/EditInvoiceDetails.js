@@ -3,19 +3,18 @@ import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import mutation from '../mutations/EditInvoiceDetails';
+import GetInvoices from '../queries/GetInvoices';
 
 class EditInvoiceDetails extends Component {
   constructor(props) {
     super(props);
 
-    this.editInvoiceDetailsRef = React.createRef();
-
     this.state = {
-      name: this.props.data ? this.props.data.name : '',
-      description: this.props.data ? this.props.data.description : '',
-      quantity: this.props.data ? this.props.data.quantity : 0,
-      price: this.props.data ? this.props.data.price : 0,
-      total: this.props.data ? this.props.data.total : 0
+      name: this.props.data.name,
+      description: this.props.data.description,
+      quantity: this.props.data.quantity,
+      price: this.props.data.price,
+      total: this.props.data.total0
     };
   }
 
@@ -25,27 +24,31 @@ class EditInvoiceDetails extends Component {
     const { name, description, quantity, price } = this.state;
     const total = quantity * price;
 
-
-    this.props
-      .mutate({
-        variables: {
-          id,
-          name,
-          description,
-          quantity,
-          price,
-          total
+    this.props.mutate({
+      variables: {
+        id,
+        name,
+        description,
+        quantity,
+        price,
+        total
+      },
+      refetchQueries: [
+        {
+          query: GetInvoices,
+          variables: {
+            skip: 0,
+            limit: 5
+          }
         }
-      })
-      .then(() => this.props.data.refetch())
-      .then(() => this.props.history.goBack());
+      ]
+    });
   }
 
   render() {
     return (
       <div
-        ref={this.editInvoiceDetailsRef}
-        id="editInvoiceModal"
+        id={`editInvoiceDetailModal-${this.props.data.id}`}
         className="modal fade"
         role="dialog"
       >
@@ -141,6 +144,12 @@ class EditInvoiceDetails extends Component {
                   />
                 </div>
                 <button
+                  disabled={
+                    !this.state.name ||
+                    !this.state.description ||
+                    !this.state.quantity ||
+                    !this.state.price
+                  }
                   data-dismiss="modal"
                   className="btn btn-large btn-success"
                   type="submit"

@@ -3,11 +3,8 @@ import { graphql, compose, Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 
-import deleteInvoiceMutation from '../mutations/DeleteInvoice';
-import createInvoiceMutation from '../mutations/CreateInvoice';
 import currentUserQuery from '../queries/CurrentUser';
 import getInvoicesQuery from '../queries/GetInvoices';
-import getInvoicesByUserIdQuery from '../queries/GetInvoicesByUserId';
 
 import Table from './Table';
 import AddInvoiceButton from './AddInvoiceButton';
@@ -24,6 +21,7 @@ const PrevButton = styled.button`
 const NextButton = styled.button`
   align: right;
 `;
+
 const SpaceBetween = styled.div`
   display: flex;
   justify-content: space-between;
@@ -32,34 +30,12 @@ const SpaceBetween = styled.div`
 class Dashboard extends Component {
   state = {
     page: 1,
-    limit: 5,
-    invoices: [],
+    limit: 10,
     filteredInvoices: [],
     searchText: ''
   };
 
-  onInvoiceDelete(id, e) {
-    e.stopPropagation();
-
-    this.props
-      .deleteInvoiceMutation({
-        variables: {
-          id
-        },
-        refetchQueries: [
-          { query: getInvoicesQuery },
-          {
-            query: getInvoicesByUserIdQuery,
-            variables: {
-              userId: this.props.currentUser.currentUser.id
-            }
-          }
-        ]
-      })
-      .then(name => console.log(name));
-  }
-
-  onInvoiceSearch(e) {
+  onInvoiceSearch(e, data) {
     const searchText = e.target.value;
 
     this.setState({
@@ -71,7 +47,7 @@ class Dashboard extends Component {
         filteredInvoices: []
       });
     } else {
-      const values = this.state.invoices.filter(invoice => {
+      const values = data.getInvoices.filter(invoice => {
         return invoice.name.includes(searchText);
       });
 
@@ -87,16 +63,6 @@ class Dashboard extends Component {
 
     return (
       <Container className="container">
-        <input
-          className="form-control"
-          type="search"
-          name="search"
-          placeholder="Search invoice by name"
-          onChange={this.onInvoiceSearch.bind(this)}
-        />
-
-        <br />
-
         <Query
           query={getInvoicesQuery}
           variables={{
@@ -107,9 +73,16 @@ class Dashboard extends Component {
           {({ loading, error, data, fetchMore, startPolling, stopPolling }) => {
             if (loading) return 'Loading';
             if (error) return 'Error';
-            console.log(data);
             return (
               <Fragment>
+                <input
+                  className="form-control"
+                  type="search"
+                  name="search"
+                  placeholder="Search invoice by name"
+                  onChange={e => this.onInvoiceSearch(e, data)}
+                />
+                <br />
                 <Table
                   userId={this.props.currentUser.currentUser.id}
                   data={
@@ -127,6 +100,7 @@ class Dashboard extends Component {
                   />
 
                   <PrevButton
+                    disabled={data.getInvoices.length <= 10}
                     onClick={() =>
                       fetchMore({
                         variables: {
@@ -139,7 +113,6 @@ class Dashboard extends Component {
                         }
                       })
                     }
-                    disabled={false}
                     className="btn btn-info"
                   >
                     <span
@@ -148,10 +121,6 @@ class Dashboard extends Component {
                     />
                   </PrevButton>
                   <NextButton
-                    disabled={
-                      this.state.page >
-                      data.getInvoices.length / this.state.limit
-                    }
                     onClick={() =>
                       fetchMore({
                         variables: {
@@ -181,8 +150,6 @@ class Dashboard extends Component {
   }
 }
 
-export default compose(
-  graphql(currentUserQuery, { name: 'currentUser' }),
-  graphql(deleteInvoiceMutation, { name: 'deleteInvoiceMutation' }),
-  graphql(createInvoiceMutation, { name: 'createInvoiceMutation' })
-)(withRouter(Dashboard));
+export default compose(graphql(currentUserQuery, { name: 'currentUser' }))(
+  withRouter(Dashboard)
+);
