@@ -61,6 +61,8 @@ class ClickableRow extends Component {
   }
 
   render() {
+    console.log(this.props.data);
+
     return (
       <tbody>
         {this.props.data.map((invoice, i) => {
