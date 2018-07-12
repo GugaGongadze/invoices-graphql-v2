@@ -8,47 +8,27 @@ import Navbar from './Navbar';
 import mutation from '../mutations/EditInvoiceDetails';
 import query from '../queries/GetInvoiceDetailsByInvoiceId';
 
-const Row = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-`;
-
-const Container = styled.div`
-  height: 100vh;
-`;
-
 class EditInvoiceDetails extends Component {
   constructor(props) {
     super(props);
 
+    this.editInvoiceDetailsRef = React.createRef();
+
     this.state = {
-      name: this.props.data.getInvoiceDetailsByInvoiceId
-        ? this.props.data.getInvoiceDetailsByInvoiceId.name
-        : '',
-      description: this.props.data.getInvoiceDetailsByInvoiceId
-        ? this.props.data.getInvoiceDetailsByInvoiceId.description
-        : '',
-      quantity: this.props.data.getInvoiceDetailsByInvoiceId
-        ? this.props.data.getInvoiceDetailsByInvoiceId.quantity
-        : 0,
-      price: this.props.data.getInvoiceDetailsByInvoiceId
-        ? this.props.data.getInvoiceDetailsByInvoiceId.price
-        : 0,
-      total: this.props.data.getInvoiceDetailsByInvoiceId
-        ? this.props.data.getInvoiceDetailsByInvoiceId.total
-        : 0
+      name: this.props.data ? this.props.data.name : '',
+      description: this.props.data ? this.props.data.description : '',
+      quantity: this.props.data ? this.props.data.quantity : 0,
+      price: this.props.data ? this.props.data.price : 0,
+      total: this.props.data ? this.props.data.total : 0
     };
   }
 
   onInvoiceDetailSubmit(e) {
     e.preventDefault();
-    const { id } = this.props.data.getInvoiceDetailsByInvoiceId;
+    const { id } = this.props.data;
     const { name, description, quantity, price } = this.state;
     const total = quantity * price;
 
-    console.log(id);
 
     this.props
       .mutate({
@@ -67,12 +47,22 @@ class EditInvoiceDetails extends Component {
 
   render() {
     return (
-      <div>
-        <Navbar />
-        <Container className="container">
-          <Row className="row">
-            <div className="col-xs-6">
-              <form className="jumbotron">
+      <div
+        ref={this.editInvoiceDetailsRef}
+        id="editInvoiceModal"
+        className="modal fade"
+        role="dialog"
+      >
+        <div className="modal-dialog modal-sm">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="close" data-dismiss="modal">
+                &times;
+              </button>
+              <h4 className="modal-title">Edit Invoice Details</h4>
+            </div>
+            <div className="modal-body">
+              <form>
                 <div className="form-group">
                   <label htmlFor="name">Name</label>
                   <input
@@ -155,6 +145,7 @@ class EditInvoiceDetails extends Component {
                   />
                 </div>
                 <button
+                  data-dismiss="modal"
                   className="btn btn-large btn-success"
                   type="submit"
                   onClick={this.onInvoiceDetailSubmit.bind(this)}
@@ -163,18 +154,11 @@ class EditInvoiceDetails extends Component {
                 </button>
               </form>
             </div>
-          </Row>
-        </Container>
+          </div>
+        </div>
       </div>
     );
   }
 }
 
-export default compose(
-  graphql(query, {
-    options: props => {
-      return { variables: { invoiceId: props.match.params.invoiceId } };
-    }
-  }),
-  graphql(mutation)
-)(withRouter(EditInvoiceDetails));
+export default compose(graphql(mutation))(withRouter(EditInvoiceDetails));

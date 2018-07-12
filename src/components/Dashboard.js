@@ -10,7 +10,6 @@ import currentUserQuery from '../queries/CurrentUser';
 import getInvoicesQuery from '../queries/GetInvoices';
 import getInvoicesByUserIdQuery from '../queries/GetInvoicesByUserId';
 
-
 import ClickableRow from './ClickableRow';
 import Navbar from './Navbar';
 import Table from './Table';
@@ -150,7 +149,6 @@ class Dashboard extends Component {
           }
         ]
       })
-      .then(() => this.props.history.push('/page/1'));
   }
 
   render() {
@@ -214,7 +212,7 @@ class Dashboard extends Component {
                       <h4 className="modal-title">Add New Invoice</h4>
                     </div>
                     <div className="modal-body">
-                      <form className="jumbotron">
+                      <form>
                         <div className="form-group">
                           <label htmlFor="name">Name</label>
                           <input
@@ -296,6 +294,7 @@ class Dashboard extends Component {
                           />
                         </div>
                         <button
+                          data-dismiss="modal"
                           type="submit"
                           className="btn btn-large btn-success"
                           onClick={this.onInvoiceSubmit.bind(this)}
@@ -303,15 +302,6 @@ class Dashboard extends Component {
                           Submit
                         </button>
                       </form>
-                    </div>
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-default"
-                        data-dismiss="modal"
-                      >
-                        Close
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -373,5 +363,5 @@ export default compose(
     }
   }),
   graphql(deleteInvoiceMutation, { name: 'deleteInvoiceMutation' }),
-  graphql(createInvoiceMutation, {name: 'createInvoiceMutation'})
+  graphql(createInvoiceMutation, { name: 'createInvoiceMutation' })
 )(withRouter(Dashboard));
