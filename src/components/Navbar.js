@@ -10,10 +10,6 @@ class Navbar extends Component {
     });
   }
 
-  onCreateInvoiceClick() {
-    this.props.history.push('/invoice/new');
-  }
-
   render() {
     return (
       <nav className="navbar navbar-default">
@@ -23,26 +19,16 @@ class Navbar extends Component {
               Invoices
             </Link>
           </div>
-          <div>
-            <ul className="nav navbar-nav navbar-right">
-              <li>
-                <button
-                  className="btn btn-large btn-success"
-                  onClick={this.onCreateInvoiceClick.bind(this)}
-                >
-                  Create New Invoice
-                </button>
-              </li>
-              <li>
-                <button
-                  className="btn btn-large btn-warning"
-                  onClick={this.onLogoutClick.bind(this)}
-                >
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
+          <ul className="nav navbar-nav navbar-right">
+            <li>
+              <button
+                className="btn btn-large btn-default navbar-brand"
+                onClick={this.onLogoutClick.bind(this)}
+              >
+                Logout
+              </button>
+            </li>
+          </ul>
         </div>
       </nav>
     );

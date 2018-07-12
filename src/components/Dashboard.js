@@ -5,9 +5,11 @@ import styled from 'styled-components';
 import { Tabs, Tab } from 'react-bootstrap';
 
 import deleteInvoiceMutation from '../mutations/DeleteInvoice';
+import createInvoiceMutation from '../mutations/CreateInvoice';
 import currentUserQuery from '../queries/CurrentUser';
 import getInvoicesQuery from '../queries/GetInvoices';
 import getInvoicesByUserIdQuery from '../queries/GetInvoicesByUserId';
+
 
 import ClickableRow from './ClickableRow';
 import Navbar from './Navbar';
@@ -29,13 +31,22 @@ const SpaceBetween = styled.div`
   justify-content: space-between;
 `;
 
+// const CreateNewInvoiceButton = styled.bu`
+//   cursor: pointer;
+// `
+
 class Dashboard extends Component {
   state = {
     page: parseInt(this.props.match.params.page) || 1,
     limit: 5,
     invoices: [],
     filteredInvoices: [],
-    searchText: ''
+    searchText: '',
+    name: '',
+    description: '',
+    date: '',
+    contactName: '',
+    address: ''
   };
 
   componentDidMount() {
@@ -113,14 +124,34 @@ class Dashboard extends Component {
     }
   }
 
-  toggleInvoiceDetails = () => {
-    console.log('ev');
-    const { height } = this.state;
+  onInvoiceSubmit(e) {
+    e.preventDefault();
 
-    this.setState({
-      height: height === 0 ? 'auto' : 0
-    });
-  };
+    const userId = this.props.currentUser.currentUser.id;
+    const { name, description, date, contactName, address } = this.state;
+
+    this.props
+      .createInvoiceMutation({
+        variables: {
+          userId,
+          name,
+          description,
+          date,
+          contactName,
+          address
+        },
+        refetchQueries: [
+          { query: getInvoicesQuery },
+          {
+            query: getInvoicesByUserIdQuery,
+            variables: {
+              userId
+            }
+          }
+        ]
+      })
+      .then(() => this.props.history.push('/page/1'));
+  }
 
   render() {
     if (
@@ -160,6 +191,132 @@ class Dashboard extends Component {
                     : this.state.filteredInvoices
                 }
               />
+
+              <button
+                className="btn"
+                data-toggle="modal"
+                data-target="#newInvoiceModal"
+              >
+                <span className="glyphicon glyphicon-plus" aria-hidden="true" />
+              </button>
+
+              <div id="newInvoiceModal" className="modal fade" role="dialof">
+                <div className="modal-dialog">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <button
+                        type="button"
+                        className="close"
+                        data-dismiss="modal"
+                      >
+                        &times;
+                      </button>
+                      <h4 className="modal-title">Add New Invoice</h4>
+                    </div>
+                    <div className="modal-body">
+                      <form className="jumbotron">
+                        <div className="form-group">
+                          <label htmlFor="name">Name</label>
+                          <input
+                            type="text"
+                            name="name"
+                            className="form-control"
+                            placeholder="Invoice name"
+                            value={this.state.name || ''}
+                            onChange={e =>
+                              this.setState({
+                                name: e.target.value
+                              })
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="description">Description</label>
+                          <input
+                            type="text"
+                            name="description"
+                            className="form-control"
+                            placeholder="Description"
+                            value={this.state.description || ''}
+                            onChange={e =>
+                              this.setState({
+                                description: e.target.value
+                              })
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="date">Due Date</label>
+                          <input
+                            type="date"
+                            name="date"
+                            className="form-control"
+                            placeholder="Due Date"
+                            value={this.state.date || ''}
+                            onChange={e =>
+                              this.setState({
+                                date: e.target.value
+                              })
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="contactName">Contact Name</label>
+                          <input
+                            type="text"
+                            name="contactName"
+                            className="form-control"
+                            placeholder="Contact Name"
+                            value={this.state.contactName || ''}
+                            onChange={e =>
+                              this.setState({
+                                contactName: e.target.value
+                              })
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="address">Address</label>
+                          <input
+                            type="text"
+                            name="address"
+                            className="form-control"
+                            placeholder="Contact Name"
+                            value={this.state.address || ''}
+                            onChange={e =>
+                              this.setState({
+                                address: e.target.value
+                              })
+                            }
+                            required
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          className="btn btn-large btn-success"
+                          onClick={this.onInvoiceSubmit.bind(this)}
+                        >
+                          Submit
+                        </button>
+                      </form>
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        data-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <SpaceBetween>
                 <PrevButton
                   onClick={this.onPrevClick.bind(this)}
@@ -215,5 +372,6 @@ export default compose(
       };
     }
   }),
-  graphql(deleteInvoiceMutation, { name: 'deleteInvoiceMutation' })
+  graphql(deleteInvoiceMutation, { name: 'deleteInvoiceMutation' }),
+  graphql(createInvoiceMutation, {name: 'createInvoiceMutation'})
 )(withRouter(Dashboard));

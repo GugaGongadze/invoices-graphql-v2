@@ -39,7 +39,6 @@ class ClickableRow extends Component {
     const invoiceId = e.target.dataset.invoiceid;
     const { name, description, quantity, price } = this.state;
     const total = quantity * price;
-    console.log(invoiceId);
 
     this.props
       .mutate({
@@ -80,7 +79,6 @@ class ClickableRow extends Component {
               </ClickableTr>
               {invoice.invoiceDetails.length > 0 ? (
                 invoice.invoiceDetails.map(invoiceDetail => {
-                  console.log(invoiceDetail);
                   return (
                     <tr key={invoiceDetail.id}>
                       <th className="p-0">
