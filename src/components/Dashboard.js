@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { Tabs, Tab } from 'react-bootstrap';
 
@@ -10,8 +10,6 @@ import currentUserQuery from '../queries/CurrentUser';
 import getInvoicesQuery from '../queries/GetInvoices';
 import getInvoicesByUserIdQuery from '../queries/GetInvoicesByUserId';
 
-import ClickableRow from './ClickableRow';
-import Navbar from './Navbar';
 import Table from './Table';
 
 const Container = styled.div`
@@ -30,13 +28,9 @@ const SpaceBetween = styled.div`
   justify-content: space-between;
 `;
 
-// const CreateNewInvoiceButton = styled.bu`
-//   cursor: pointer;
-// `
-
 class Dashboard extends Component {
   state = {
-    page: parseInt(this.props.match.params.page) || 1,
+    page: parseInt(this.props.match.params.page, 10) || 1,
     limit: 5,
     invoices: [],
     filteredInvoices: [],
@@ -138,17 +132,9 @@ class Dashboard extends Component {
           date,
           contactName,
           address
-        },
-        refetchQueries: [
-          { query: getInvoicesQuery },
-          {
-            query: getInvoicesByUserIdQuery,
-            variables: {
-              userId
-            }
-          }
-        ]
-      })
+        }})
+        .then(this.props.invoicesQuery.refetch())
+        // .then(this.props.history.push('/page/1'))
   }
 
   render() {
@@ -177,6 +163,7 @@ class Dashboard extends Component {
           />
 
           <br />
+
           <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
             <Tab eventKey={1} title="Total Invoices">
               <Table
@@ -198,7 +185,7 @@ class Dashboard extends Component {
                 <span className="glyphicon glyphicon-plus" aria-hidden="true" />
               </button>
 
-              <div id="newInvoiceModal" className="modal fade" role="dialof">
+              <div id="newInvoiceModal" className="modal fade" role="dialog">
                 <div className="modal-dialog">
                   <div className="modal-content">
                     <div className="modal-header">
@@ -311,7 +298,7 @@ class Dashboard extends Component {
                 <PrevButton
                   onClick={this.onPrevClick.bind(this)}
                   disabled={
-                    parseInt(this.props.match.params.page) === 1 ||
+                    parseInt(this.props.match.params.page, 10) === 1 ||
                     !this.props.match.params.page
                   }
                   className="btn btn-info"
@@ -320,7 +307,7 @@ class Dashboard extends Component {
                 </PrevButton>
                 <NextButton
                   disabled={
-                    parseInt(this.props.match.params.page) >
+                    parseInt(this.props.match.params.page, 10) >
                     this.state.invoices.length / this.state.limit
                   }
                   onClick={this.onNextClick.bind(this)}
@@ -354,7 +341,7 @@ export default compose(
   graphql(getInvoicesQuery, {
     name: 'invoicesQuery',
     options: props => {
-      const page = parseInt(window.location.pathname.slice(6)) || 1;
+      const page = parseInt(window.location.pathname.slice(6), 10) || 1;
       const limit = 5;
       const skip = page * limit - limit;
       return {

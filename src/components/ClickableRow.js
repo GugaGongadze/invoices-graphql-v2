@@ -3,14 +3,11 @@ import styled from 'styled-components';
 import format from 'date-fns/format';
 import { graphql, compose } from 'react-apollo';
 
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import mutation from '../mutations/CreateInvoiceDetails';
-import invoiceDetailsQuery from '../queries/GetInvoiceDetailsByInvoiceId';
 import query from '../queries/CurrentUser';
 
 import InvoiceDetails from './InvoiceDetails';
-
-import './Dashboard.css';
 
 const ClickableTr = styled.tr`
   cursor: pointer;
@@ -99,7 +96,6 @@ class ClickableRow extends Component {
                       <h4 className="modal-title">Invoice Details</h4>
                     </div>
                     <div className="modal-body">
-                      <h3>Here, have some more information 👏</h3>
                       <div className="table-responsive">
                         <table className="table table-striped table-hover">
                           <thead>
@@ -260,196 +256,6 @@ class ClickableRow extends Component {
                   </div>
                 </div>
               </div>
-
-              {/* {invoice.invoiceDetails.length > 0 ? (
-                invoice.invoiceDetails.map(invoiceDetail => {
-                  return (
-                    <tr key={invoiceDetail.id}>
-                      <th className="p-0">
-                        <div className="invdet">Name</div>
-                        <div className="invdet">
-                          {invoiceDetail.name || '&nbsp;'}
-                        </div>
-                      </th>
-                      <th className="p-0">
-                        <div className="invdet">Description</div>
-                        <div className="invdet">
-                          {invoiceDetail.description || '&nbsp;'}
-                        </div>
-                      </th>
-                      <th className="p-0">
-                        <div className="invdet">Quantity</div>
-                        <div className="invdet">
-                          {invoiceDetail.quantity || '&nbsp;'}
-                        </div>
-                      </th>
-                      <th className="p-0">
-                        <div className="invdet">Price</div>
-                        <div className="invdet">
-                          {invoiceDetail.price || '&nbsp;'}
-                        </div>
-                      </th>
-                      <th className="p-0">
-                        <div className="invdet">Total</div>
-                        <div className="invdet">
-                          {invoiceDetail.total || '&nbsp;'}
-                        </div>
-                      </th>
-                      <th className="p-0">
-                        <div className="invdet">Add Details</div>
-                        <div className="invdet">
-                          <button
-                            data-toggle="modal"
-                            data-target="#addInvoiceDetailModal1"
-                            className="btn btn-large btn-success"
-                          >
-                            add more
-                          </button>
-
-                        </div>
-                      </th>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td className="p-0">
-                    <div className="invdet">
-                      this invoice has no details go ahead and{' '}
-                      <button
-                        data-toggle="modal"
-                        data-target="#addInvoiceDetailModal"
-                        className="btn btn-large btn-success"
-                      >
-                        add some
-                      </button>
-                      <div
-                        id="addInvoiceDetailModal"
-                        className="modal fade"
-                        role="dialog"
-                      >
-                        <div className="modal-dialog">
-                          <div className="modal-content">
-                            <div className="modal-header">
-                              <button
-                                type="button"
-                                className="close"
-                                data-dismiss="modal"
-                              >
-                                &times;
-                              </button>
-                              <h4 className="modal-title">
-                                Add Invoice Details
-                              </h4>
-                            </div>
-                            <div className="modal-body">
-                              <form>
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="name"
-                                    className="form-control"
-                                    placeholder="Name"
-                                    value={this.state.name}
-                                    onChange={e =>
-                                      this.setState({
-                                        name: e.target.value
-                                      })
-                                    }
-                                    required
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <input
-                                    type="text"
-                                    name="description"
-                                    className="form-control"
-                                    placeholder="Description"
-                                    value={this.state.description}
-                                    onChange={e =>
-                                      this.setState({
-                                        description: e.target.value
-                                      })
-                                    }
-                                    required
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <input
-                                    type="number"
-                                    name="quantity"
-                                    className="form-control"
-                                    placeholder="Quantity"
-                                    value={this.state.quantity}
-                                    onChange={e =>
-                                      this.setState({
-                                        quantity: e.target.value
-                                      })
-                                    }
-                                    required
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <input
-                                    type="number"
-                                    name="price"
-                                    className="form-control"
-                                    placeholder="Price"
-                                    value={this.state.price}
-                                    onChange={e =>
-                                      this.setState({
-                                        price: e.target.value
-                                      })
-                                    }
-                                    required
-                                  />
-                                </div>
-                                <div className="form-group">
-                                  <input
-                                    type="number"
-                                    name="total"
-                                    className="form-control"
-                                    placeholder="Total"
-                                    value={
-                                      this.state.quantity * this.state.price
-                                    }
-                                    onChange={e =>
-                                      this.setState({
-                                        total: e.target.value
-                                      })
-                                    }
-                                    disabled
-                                    required
-                                  />
-                                </div>
-                                <button
-                                  data-invoiceid={invoice.id}
-                                  className="btn btn-large btn-success"
-                                  type="submit"
-                                  onClick={this.onInvoiceDetailSubmit.bind(
-                                    this
-                                  )}
-                                >
-                                  Submit
-                                </button>
-                              </form>
-                            </div>
-                            <div className="modal-footer">
-                              <button
-                                type="button"
-                                className="btn btn-default"
-                                data-dismiss="modal"
-                              >
-                                Close
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )} */}
             </Fragment>
           );
         })}

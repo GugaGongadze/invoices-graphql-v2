@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
-
-import Navbar from './Navbar';
 
 import mutation from '../mutations/EditInvoiceDetails';
-import query from '../queries/GetInvoiceDetailsByInvoiceId';
 
 class EditInvoiceDetails extends Component {
   constructor(props) {

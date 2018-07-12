@@ -1,10 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
 
 import query from '../queries/CurrentUser';
-import CreateInvoiceDetails from './CreateInvoiceDetails';
 import mutation from '../mutations/DeleteInvoiceDetails';
 
 import EditInvoiceDetails from './EditInvoiceDetails';
