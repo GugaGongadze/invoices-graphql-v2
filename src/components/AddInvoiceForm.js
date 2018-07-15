@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 import GetInvoices from '../queries/GetInvoices';
 import createInvoiceMutation from '../mutations/CreateInvoice';
@@ -26,7 +26,7 @@ class AddInvoiceForm extends Component {
   onInvoiceSubmit(event) {
     event.preventDefault();
 
-    const userId = this.props.userId;
+    const { userId } = this.props;
     const { name, description, date, contactName, address } = this.state;
 
     this.props.mutate({
@@ -133,4 +133,4 @@ class AddInvoiceForm extends Component {
   }
 }
 
-export default compose(graphql(createInvoiceMutation))(AddInvoiceForm);
+export default graphql(createInvoiceMutation)(AddInvoiceForm);

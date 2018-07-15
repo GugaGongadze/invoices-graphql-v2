@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 import format from 'date-fns/format';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import mutation from '../mutations/CreateInvoiceDetails';
-import deleteInvoiceMutation from '../mutations/DeleteInvoice';
-import GetInvoices from '../queries/GetInvoices';
+import mutation from '../mutations/DeleteInvoice';
+import getInvoicesQuery from '../queries/GetInvoices';
 
 import EditInvoiceModal from './EditInvoiceModal';
 import InvoiceDetailsModal from './InvoiceDetailsModal';
@@ -17,13 +16,13 @@ const ClickableTr = styled.tr`
 
 class InvoiceRow extends Component {
   onInvoiceDelete(e, id) {
-    this.props.deleteInvoiceMutation({
+    this.props.mutate({
       variables: {
         id
       },
       refetchQueries: [
         {
-          query: GetInvoices,
+          query: getInvoicesQuery,
           variables: {
             skip: 0,
             limit: 5
@@ -32,31 +31,47 @@ class InvoiceRow extends Component {
       ]
     });
   }
-
   render() {
-
     return (
       <tbody>
         {this.props.data.map((invoice, i) => {
           return (
             <Fragment key={invoice.id}>
               <ClickableTr data-index={`inv-${i}`}>
-                <td data-toggle="modal" data-target={`#invoiceDetailsModal-${i}`}>
+                <td
+                  data-toggle="modal"
+                  data-target={`#invoiceDetailsModal-${i}`}
+                >
                   {invoice.name}
                 </td>
-                <td data-toggle="modal" data-target={`#invoiceDetailsModal-${i}`}>
+                <td
+                  data-toggle="modal"
+                  data-target={`#invoiceDetailsModal-${i}`}
+                >
                   {format(invoice.created, 'DD/MM/YYYY')}
                 </td>
-                <td data-toggle="modal" data-target={`#invoiceDetailsModal-${i}`}>
+                <td
+                  data-toggle="modal"
+                  data-target={`#invoiceDetailsModal-${i}`}
+                >
                   {format(invoice.date, 'DD/MM/YYYY')}
                 </td>
-                <td data-toggle="modal" data-target={`#invoiceDetailsModal-${i}`}>
+                <td
+                  data-toggle="modal"
+                  data-target={`#invoiceDetailsModal-${i}`}
+                >
                   {invoice.description}
                 </td>
-                <td data-toggle="modal" data-target={`#invoiceDetailsModal-${i}`}>
+                <td
+                  data-toggle="modal"
+                  data-target={`#invoiceDetailsModal-${i}`}
+                >
                   {invoice.contactName}
                 </td>
-                <td data-toggle="modal" data-target={`#invoiceDetailsModal-${i}`}>
+                <td
+                  data-toggle="modal"
+                  data-target={`#invoiceDetailsModal-${i}`}
+                >
                   {invoice.address}
                 </td>
                 {invoice.userId === this.props.userId && (
@@ -89,7 +104,12 @@ class InvoiceRow extends Component {
                   </Fragment>
                 )}
               </ClickableTr>
-              <InvoiceDetailsModal invoiceId={invoice.id} userId={this.props.userId} index={i} invoiceDetails={invoice.invoiceDetails} />
+              <InvoiceDetailsModal
+                invoiceId={invoice.id}
+                userId={this.props.userId}
+                index={i}
+                invoiceDetails={invoice.invoiceDetails}
+              />
             </Fragment>
           );
         })}
@@ -98,7 +118,4 @@ class InvoiceRow extends Component {
   }
 }
 
-export default compose(
-  graphql(mutation),
-  graphql(deleteInvoiceMutation, { name: 'deleteInvoiceMutation' })
-)(withRouter(InvoiceRow));
+export default graphql(mutation)(withRouter(InvoiceRow));
