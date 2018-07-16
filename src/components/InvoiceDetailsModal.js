@@ -7,7 +7,7 @@ const InvoiceDetailsModal = props => {
   return (
     <Fragment>
       <tr>
-        <td style={{padding: 0, borderTop:'none'}}>
+        <td style={{ padding: 0, borderTop: 'none' }}>
           <div
             id={`invoiceDetailsModal-${props.index}`}
             className="modal fade"
@@ -51,16 +51,18 @@ const InvoiceDetailsModal = props => {
                         })}
                     </table>
                   </div>
-                  <button
-                    className="btn btn-info"
-                    data-toggle="modal"
-                    data-target={`#addInvoiceDetailModal-${props.index}`}
-                  >
-                    <span
-                      className="glyphicon glyphicon-plus"
-                      aria-hidden="true"
-                    />
-                  </button>
+                  {props.userId === props.invoiceUser && (
+                    <button
+                      className="btn btn-info"
+                      data-toggle="modal"
+                      data-target={`#addInvoiceDetailModal-${props.index}`}
+                    >
+                      <span
+                        className="glyphicon glyphicon-plus"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  )}
                 </div>
                 <div className="modal-footer">
                   <button

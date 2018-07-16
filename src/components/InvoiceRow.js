@@ -98,6 +98,7 @@ class InvoiceRow extends Component {
                 )}
               </ClickableTr>
               <InvoiceDetailsModal
+                invoiceUser={invoice.userId}
                 invoiceId={invoice.id}
                 userId={this.props.userId}
                 index={i}
