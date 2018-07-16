@@ -6,14 +6,13 @@ const Errors = props => {
 			className="alert alert-danger alert-dismissible fade in"
 			key="error"
 		>
-			<a
-				href="#"
+			<button
 				className="close"
 				data-dismiss="alert"
 				aria-label="close"
 			>
 				&times;
-			</a>
+			</button>
 			{error}
 		</div>
 	));
