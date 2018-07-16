@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
-import { graphql, compose } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
+import { graphql } from 'react-apollo';
 
 import mutation from '../mutations/EditInvoiceDetails';
 import GetInvoices from '../queries/GetInvoices';
 
 class EditInvoiceDetails extends Component {
-  constructor(props) {
-    super(props);
+  state = {
+    name: this.props.data.name,
+    description: this.props.data.description,
+    quantity: this.props.data.quantity,
+    price: this.props.data.price,
+    total: this.props.data.total0
+  };
 
-    this.state = {
-      name: this.props.data.name,
-      description: this.props.data.description,
-      quantity: this.props.data.quantity,
-      price: this.props.data.price,
-      total: this.props.data.total0
-    };
-  }
-
-  onInvoiceDetailSubmit(e) {
+  onInvoiceDetailSubmit = (e) => {
     e.preventDefault();
     const { id } = this.props.data;
     const { name, description, quantity, price } = this.state;
@@ -161,7 +156,7 @@ class EditInvoiceDetails extends Component {
                         data-dismiss="modal"
                         className="btn btn-large btn-success"
                         type="submit"
-                        onClick={this.onInvoiceDetailSubmit.bind(this)}
+                        onClick={this.onInvoiceDetailSubmit}
                       >
                         Submit
                       </button>
@@ -177,4 +172,4 @@ class EditInvoiceDetails extends Component {
   }
 }
 
-export default compose(graphql(mutation))(withRouter(EditInvoiceDetails));
+export default graphql(mutation)(EditInvoiceDetails);

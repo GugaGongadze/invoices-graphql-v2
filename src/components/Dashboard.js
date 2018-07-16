@@ -102,16 +102,16 @@ class Dashboard extends Component {
                   />
 
                   <PrevButton
-                    disabled={data.getInvoices.length <= 10}
+                    disabled={data.getInvoices.length <= 5}
                     onClick={() =>
                       fetchMore({
                         variables: {
                           skip: 0,
-                          limit: data.getInvoices.length - this.state.limit
+                          limit: data.getInvoices.length - this.state.limit / 2
                         },
                         updateQuery: (prev, { fetchMoreResult }) => {
                           if (!fetchMoreResult) return prev;
-                          return fetchMoreResult;
+                          return Object.assign({}, null, fetchMoreResult);
                         }
                       })
                     }
@@ -123,16 +123,15 @@ class Dashboard extends Component {
                     />
                   </PrevButton>
                   <NextButton
-                    disabled={data.getInvoices.length}
                     onClick={() =>
                       fetchMore({
                         variables: {
                           skip: 0,
-                          limit: this.state.limit + data.getInvoices.length
+                          limit: this.state.limit / 2 + data.getInvoices.length
                         },
                         updateQuery: (prev, { fetchMoreResult }) => {
                           if (!fetchMoreResult) return prev;
-                          return fetchMoreResult;
+                          return Object.assign({}, null, fetchMoreResult);
                         }
                       })
                     }

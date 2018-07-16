@@ -1,21 +1,14 @@
 import React, { Component, Fragment } from 'react';
-import { graphql, compose } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
+import { graphql } from 'react-apollo';
 
 import query from '../queries/GetInvoices';
 import mutation from '../mutations/DeleteInvoiceDetails';
 
 class InvoiceDetails extends Component {
-  constructor(props) {
-    super(props);
-
-    this.deleteInvoiceDetailButtonRef = React.createRef();
-  }
-
   onInvoiceDetailDelete() {
     const id = this.props.data.id;
 
-    this.props.deleteInvoiceDetailMutation({
+    this.props.mutate({
       variables: {
         id
       },
@@ -57,7 +50,9 @@ class InvoiceDetails extends Component {
                   <button
                     className="btn btn-large btn-warning"
                     data-toggle="modal"
-                    data-target={`#editInvoiceDetailModal-${this.props.data.id}`}
+                    data-target={`#editInvoiceDetailModal-${
+                      this.props.data.id
+                    }`}
                   >
                     <span
                       className="glyphicon glyphicon-pencil"
@@ -85,6 +80,4 @@ class InvoiceDetails extends Component {
   }
 }
 
-export default compose(
-  graphql(mutation, { name: 'deleteInvoiceDetailMutation' })
-)(withRouter(InvoiceDetails));
+export default graphql(mutation)(InvoiceDetails);

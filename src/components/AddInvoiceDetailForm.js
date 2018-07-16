@@ -23,7 +23,7 @@ class AddInvoiceDetailForm extends Component {
     });
   }
 
-  onInvoiceDetailSubmit(e) {
+  onInvoiceDetailSubmit = (e) => {
     e.preventDefault();
 
     const { userId, invoiceId } = this.props;
@@ -116,7 +116,7 @@ class AddInvoiceDetailForm extends Component {
           data-dismiss="modal"
           className="btn btn-large btn-success"
           type="submit"
-          onClick={this.onInvoiceDetailSubmit.bind(this)}
+          onClick={this.onInvoiceDetailSubmit}
         >
           Submit
         </button>

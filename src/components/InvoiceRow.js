@@ -1,17 +1,11 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'styled-components';
 import format from 'date-fns/format';
 import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
 
 import mutation from '../mutations/DeleteInvoice';
 
 import EditInvoiceModal from './EditInvoiceModal';
 import InvoiceDetailsModal from './InvoiceDetailsModal';
-
-const ClickableTr = styled.tr`
-  cursor: pointer;
-`;
 
 class InvoiceRow extends Component {
   onInvoiceDelete = (e, id) => {
@@ -30,7 +24,7 @@ class InvoiceRow extends Component {
         {this.props.data.map((invoice, i) => {
           return (
             <Fragment key={invoice.id}>
-              <ClickableTr data-index={`inv-${i}`}>
+              <tr style={{cursor: 'pointer'}} data-index={`inv-${i}`}>
                 <td
                   data-toggle="modal"
                   data-target={`#invoiceDetailsModal-${i}`}
@@ -96,7 +90,7 @@ class InvoiceRow extends Component {
                     </td>
                   </Fragment>
                 )}
-              </ClickableTr>
+              </tr>
               <InvoiceDetailsModal
                 invoiceUser={invoice.userId}
                 invoiceId={invoice.id}
@@ -112,4 +106,4 @@ class InvoiceRow extends Component {
   }
 }
 
-export default graphql(mutation)(withRouter(InvoiceRow));
+export default graphql(mutation)(InvoiceRow);

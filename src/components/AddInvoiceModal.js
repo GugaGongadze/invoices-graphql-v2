@@ -23,7 +23,7 @@ class AddInvoiceModal extends Component {
     });
   }
 
-  onInvoiceSubmit(event) {
+  onInvoiceSubmit = () => {
     const { userId } = this.props;
     const { name, description, date, contactName, address } = this.state;
 
@@ -124,7 +124,7 @@ class AddInvoiceModal extends Component {
                   data-dismiss="modal"
                   type="submit"
                   className="btn btn-large btn-success"
-                  onClick={this.onInvoiceSubmit.bind(this)}
+                  onClick={this.onInvoiceSubmit}
                 >
                   Submit
                 </button>

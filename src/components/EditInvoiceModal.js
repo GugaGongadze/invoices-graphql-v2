@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import mutation from '../mutations/EditInvoice';
 import getInvoicesQuery from '../queries/GetInvoices';
 
@@ -22,7 +22,7 @@ class EditInvoice extends Component {
     });
   }
 
-  onInvoiceEdit(e) {
+  onInvoiceEdit = (e) => {
     e.preventDefault();
     const { id } = this.props.data;
     const { name, description, date, contactName, address } = this.state;
@@ -138,7 +138,7 @@ class EditInvoice extends Component {
                   type="submit"
                   data-dismiss="modal"
                   className="btn btn-large btn-success"
-                  onClick={this.onInvoiceEdit.bind(this)}
+                  onClick={this.onInvoiceEdit}
                 >
                   Submit
                 </button>
@@ -151,4 +151,4 @@ class EditInvoice extends Component {
   }
 }
 
-export default compose(graphql(mutation))(EditInvoice);
+export default graphql(mutation)(EditInvoice);
