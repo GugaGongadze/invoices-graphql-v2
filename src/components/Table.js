@@ -19,7 +19,7 @@ class Table extends Component {
             </tr>
           </thead>
 
-          <InvoiceRow userId={this.props.userId} data={this.props.data} />
+          <InvoiceRow handleInvoiceDelete={this.props.handleInvoiceDelete} userId={this.props.userId} data={this.props.data} />
         </table>
       </div>
     );

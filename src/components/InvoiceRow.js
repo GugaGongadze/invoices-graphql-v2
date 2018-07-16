@@ -5,7 +5,6 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import mutation from '../mutations/DeleteInvoice';
-import getInvoicesQuery from '../queries/GetInvoices';
 
 import EditInvoiceModal from './EditInvoiceModal';
 import InvoiceDetailsModal from './InvoiceDetailsModal';
@@ -15,22 +14,15 @@ const ClickableTr = styled.tr`
 `;
 
 class InvoiceRow extends Component {
-  onInvoiceDelete(e, id) {
-    this.props.mutate({
-      variables: {
-        id
-      },
-      refetchQueries: [
-        {
-          query: getInvoicesQuery,
-          variables: {
-            skip: 0,
-            limit: 5
-          }
+  onInvoiceDelete = (e, id) => {
+    this.props
+      .mutate({
+        variables: {
+          id
         }
-      ]
-    });
-  }
+      })
+      .then(() => this.props.handleInvoiceDelete())
+  };
   render() {
     return (
       <tbody>

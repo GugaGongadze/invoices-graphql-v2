@@ -33,7 +33,7 @@
     "styled-components": "^3.3.3"
   },
   "scripts": {
-    "dev": "concurrently --kill-others \"nodemon server.js --ignore client\" \"npm start\"",
+    "dev": "concurrently --kill-others \"nodemon server.js --ignore src\" \"npm start\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

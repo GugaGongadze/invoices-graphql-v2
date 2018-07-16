@@ -70,7 +70,7 @@ class Dashboard extends Component {
             limit: this.state.limit
           }}
         >
-          {({ loading, error, data, fetchMore, startPolling, stopPolling }) => {
+          {({ loading, error, data, fetchMore, refetch }) => {
             if (loading) return 'Loading';
             if (error) return 'Error';
             return (
@@ -84,6 +84,7 @@ class Dashboard extends Component {
                 />
                 <br />
                 <Table
+                  handleInvoiceDelete={() => refetch()}
                   userId={this.props.currentUser.currentUser.id}
                   data={
                     this.state.filteredInvoices.length === 0 &&
@@ -97,6 +98,7 @@ class Dashboard extends Component {
                   <AddInvoiceButton />
                   <AddInvoiceModal
                     userId={this.props.currentUser.currentUser.id}
+                    handleInvoiceCreate={() => refetch()}
                   />
 
                   <PrevButton
@@ -121,6 +123,7 @@ class Dashboard extends Component {
                     />
                   </PrevButton>
                   <NextButton
+                    disabled={data.getInvoices.length}
                     onClick={() =>
                       fetchMore({
                         variables: {
