@@ -132,7 +132,6 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLID }
       },
       resolve(parent, { id }, req) {
-        console.log(id);
         return InvoiceDetail.remove({ _id: id });
       }
     },
