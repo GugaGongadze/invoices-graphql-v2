@@ -25,6 +25,7 @@ const NextButton = styled.button`
 const SpaceBetween = styled.div`
   display: flex;
   justify-content: space-between;
+  padding-bottom: 40px;
 `;
 
 class Dashboard extends Component {
@@ -153,5 +154,5 @@ class Dashboard extends Component {
 }
 
 export default compose(graphql(currentUserQuery, { name: 'currentUser' }))(
-  withRouter(Dashboard)
+  Dashboard
 );
