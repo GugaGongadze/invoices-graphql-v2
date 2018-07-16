@@ -8,9 +8,14 @@ import mutation from '../mutations/DeleteInvoice';
 
 import EditInvoiceModal from './EditInvoiceModal';
 import InvoiceDetailsModal from './InvoiceDetailsModal';
+import AddInvoiceDetailModal from './AddInvoiceDetailModal';
 
 const ClickableTr = styled.tr`
   cursor: pointer;
+`;
+
+const HiddenTr = styled.tr`
+  display: none;
 `;
 
 class InvoiceRow extends Component {
@@ -21,8 +26,9 @@ class InvoiceRow extends Component {
           id
         }
       })
-      .then(() => this.props.handleInvoiceDelete())
+      .then(() => this.props.handleInvoiceDelete());
   };
+
   render() {
     return (
       <tbody>

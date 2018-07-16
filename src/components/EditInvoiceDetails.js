@@ -48,6 +48,7 @@ class EditInvoiceDetails extends Component {
   render() {
     return (
       <div
+        style={{ minHeight: '600px' }}
         id={`editInvoiceDetailModal-${this.props.data.id}`}
         className="modal fade"
         role="dialog"
