@@ -80,9 +80,8 @@ function login({ username, password, req }) {
         rej('Invalid credentials.');
       }
 
-      req.logIn(user, err => {
+      req.logIn(user, (err) => {
         if (err) rej(err);
-
         res(user);
       });
     })({ body: { username, password } });

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { GraphQLObjectType, GraphQLID, GraphQLList, GraphQLInt } = graphql;
 
 const UserType = require('./user_type');
+const User = mongoose.model('user');
 
 const InvoiceType = require('./invoice_type');
 const Invoice = mongoose.model('invoice');
@@ -15,7 +16,7 @@ const RootQueryType = new GraphQLObjectType({
   fields: {
     currentUser: {
       type: UserType,
-      resolve(parent, args, req) {
+      resolve(parent, args, req) {      
         return req.user;
       }
     },

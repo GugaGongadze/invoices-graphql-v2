@@ -4,11 +4,13 @@ import { Redirect } from 'react-router';
 
 import query from '../queries/CurrentUser';
 import Navbar from '../components/Navbar';
+import Login from '../components/Login';
 import Dashboard from '../components/Dashboard';
 
 class App extends Component {
   render() {
     if (this.props.data.loading) return <div />;
+
 
     return this.props.data.currentUser ? (
       <div>
@@ -16,7 +18,7 @@ class App extends Component {
         <Dashboard />
       </div>
     ) : (
-      <Redirect to="/login" />
+      <Login />
     );
   }
 }

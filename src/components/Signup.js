@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { graphql } from 'react-apollo';
+import { Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
 import mutation from '../mutations/Signup';
 import Errors from './Errors';
@@ -31,7 +32,7 @@ const Form = styled.form`
 `;
 
 class Signup extends Component {
-  state = { username: '', email: '', password: '', errors: [] };
+  state = { username: '', email: '', password: '', errors: [], redirect: false };
 
   OnSignUp = e => {
     e.preventDefault();
@@ -42,7 +43,7 @@ class Signup extends Component {
       .mutate({
         variables: { username, email, password }
       })
-      .then(() => this.props.history.push('/'))
+      .then(() => this.setState({redirect: true}))
       .catch(res => {
         const errors = res.graphQLErrors.map(error => error.message);
         this.setState({ errors });
@@ -60,6 +61,7 @@ class Signup extends Component {
   }
 
   render() {
+    if (this.state.redirect) return <Redirect to="/dashboard" />
     return (
       <Container className="container">
         <Row>

@@ -15,7 +15,10 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  link: new HttpLink(),
+  link: new HttpLink({
+    uri: '/graphql',
+    credentials: 'same-origin',
+  }),
   cache
 });
 
@@ -25,6 +28,7 @@ const Routes = () => (
       <Switch>
         <Route exact path="/" component={App} />
         <Route exact path="/login" component={Login} />
+        <Route path="/dashboard" component={App} />
         <Route path="/signup" component={Signup} />
         <Route path="/page/:page" component={App} />
         <Route path="/*" component={App} />

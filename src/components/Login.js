@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
+import { Redirect } from 'react-router';
 import styled from 'styled-components';
 import Errors from './Errors';
+import query from '../queries/CurrentUser';
 import mutation from '../mutations/Login';
 
 const Row = styled.div`
@@ -31,7 +33,7 @@ const Form = styled.form`
 `;
 
 class Login extends Component {
-  state = { username: '', password: '', errors: [] };
+  state = { username: '', password: '', errors: [], redirect: false };
 
   onLogin = (e) => {
     e.preventDefault();
@@ -40,9 +42,13 @@ class Login extends Component {
 
     this.props
       .mutate({
-        variables: { username, password }
+        variables: { username, password },
+        refetchQueries: [{
+          query
+        }
+        ]
       })
-      .then(() => this.props.history.push('/'))
+      .then(() => this.setState({redirect: true}))
       .catch(res => {
         const errors = res.graphQLErrors.map(error => error.message);
         this.setState({ errors });
@@ -60,6 +66,8 @@ class Login extends Component {
   }
 
   render() {
+    if (this.state.redirect) return <Redirect to="/dashboard" />;
+
     return (
       <Container className="container">
         <Row class="row">
@@ -109,4 +117,7 @@ class Login extends Component {
   }
 }
 
-export default graphql(mutation)(withRouter(Login));
+export default compose(
+  graphql(query),
+  graphql(mutation)
+)(withRouter(Login));
