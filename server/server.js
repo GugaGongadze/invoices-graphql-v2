@@ -21,7 +21,7 @@ const webpack = require('webpack');
 const webpackConfig = require('../webpack.config.js');
 app.use(webpackMiddleware(webpack(webpackConfig)));
 const MONGO_URI =
-  'mongodb://guga:guga123@ds127961.mlab.com:27961/vobi-invoices';
+  'mongodb://:@ds127961.mlab.com:27961/vobi-invoices';
 
 mongoose.connect(MONGO_URI);
 mongoose.connection
