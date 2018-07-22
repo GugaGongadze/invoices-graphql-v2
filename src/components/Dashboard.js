@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import styled from 'styled-components';
+import debounce from 'lodash.debounce';
 
 import InvoiceQuery from './InvoiceQuery';
-
 import currentUserQuery from '../queries/CurrentUser';
 import getInvoicesQuery from '../queries/GetInvoices';
 import getInvoicesBySearchTextQuery from '../queries/GetInvoicesBySearchText';
@@ -18,13 +18,13 @@ class Dashboard extends Component {
     searchText: ''
   };
 
-  onInvoiceSearch = e => {
+  onInvoiceSearch = debounce(e => {
     const searchText = e.target.value;
 
     this.setState({
       searchText
     });
-  };
+  }, 350);
 
   render() {
     if (!this.props.currentUser.currentUser || this.props.currentUser.loading)
@@ -37,7 +37,10 @@ class Dashboard extends Component {
           type="search"
           name="search"
           placeholder="Search invoice by name"
-          onChange={this.onInvoiceSearch}
+          onChange={e => {
+            e.persist();
+            this.onInvoiceSearch(e);
+          }}
         />
         <div>
           {this.state.searchText.length > 0 ? (
