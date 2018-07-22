@@ -1,6 +1,12 @@
 const graphql = require('graphql');
 const mongoose = require('mongoose');
-const { GraphQLObjectType, GraphQLID, GraphQLList, GraphQLInt } = graphql;
+const {
+  GraphQLObjectType,
+  GraphQLID,
+  GraphQLList,
+  GraphQLInt,
+  GraphQLString
+} = graphql;
 
 const UserType = require('./user_type');
 const User = mongoose.model('user');
@@ -16,7 +22,7 @@ const RootQueryType = new GraphQLObjectType({
   fields: {
     currentUser: {
       type: UserType,
-      resolve(parent, args, req) {      
+      resolve(parent, args, req) {
         return req.user;
       }
     },
@@ -30,7 +36,16 @@ const RootQueryType = new GraphQLObjectType({
         return Invoice.find({})
           .skip(skip)
           .limit(limit)
-          .sort({created : -1});
+          .sort({ created: -1 });
+      }
+    },
+    getInvoicesBySearchText: {
+      type: new GraphQLList(InvoiceType),
+      args: {
+        searchText: { type: GraphQLString }
+      },
+      resolve(parent, { searchText }) {
+        return Invoice.find({ $text: { $search: searchText } });
       }
     },
     getInvoiceById: {
